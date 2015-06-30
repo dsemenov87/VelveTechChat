@@ -31,14 +31,19 @@
         <script src="~/SignalR/hubs"></script>
         <script>
             $(function () {
-                var lastMessageUniqueId,
-                    discussionElem = document.getElementById('discussion'),
+                var discussionElem = document.getElementById('discussion'),
                     messageElem = document.getElementById('message'),
                     currentAuthorElem = document.getElementById('authorId');
 
                 var panelElem = discussionElem.parentNode;
                 var chat = $.connection.chatHub;
 
+                /**
+                 * Фунция добавляет новый блок с сообщением в чат. При сравнении
+                 * идентификаторов автора сообщения и клиента чата, определяется,
+                 * свое это сообщение или нет. В зависимости от этого выбирается
+                 * стиль для его отображения.
+                 */
                 chat.client.addNewMessageToPage = function (id, message, authorId) {
                     var item = document.createElement('div'),
                         currentTime = new Date().toTimeString().substring(0, 5);

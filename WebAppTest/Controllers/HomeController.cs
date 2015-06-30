@@ -30,6 +30,12 @@ namespace VelveTechChat.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// По условию задачи чат должен быть анонимный. Тем не менее 
+        /// реализация предполагает простую авторизацию при помощи куки
+        /// для того, чтобы можно было отличть свои сообщения от чужих.
+        /// </summary>
+        /// <returns>Новый куки с токеном авторизации</returns>
         private HttpCookie GetAuthCookie()
         {
             var authCookie = Request.Cookies["__CHAT_AUTH"];
@@ -45,6 +51,16 @@ namespace VelveTechChat.Controllers
             return authCookie;
         }
 
+        /// <summary>
+        /// Метод позволяет получить из БД предыдущие сообщения в чате.
+        /// Для простоты пока их количество неизменяемо и равно 10.
+        /// </summary>
+        /// <param name="fromMessageId">
+        /// Идентификатор сообщения, относительно которого необходимо получить
+        /// предыдущие сообщения. 
+        /// Если null - просто выгружаются последние на текущий момент. 
+        /// </param>
+        /// <returns></returns>
         private IEnumerable<ChatMessage> GetChatMessages(string fromMessageId)
         {
             var fromMessage = Repository.ChatMessages.FirstOrDefault(i => i.Id.ToString() == fromMessageId);
