@@ -67,7 +67,7 @@
 
                 $.connection.hub.start().done(function () {
                     $(messageElem).bind('keyup', function (e) {
-                        if (e.key !== 'Enter') return;
+                        if (e.keyCode !== 13/*'Enter'*/) return;
                         chat.server.send(messageElem.value, currentAuthorElem.textContent);
                         messageElem.value = new String;
                     });
