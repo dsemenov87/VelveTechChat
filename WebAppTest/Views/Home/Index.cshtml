@@ -1,0 +1,72 @@
+﻿@{
+    ViewBag.Title = "Chat Application";
+}
+
+<div class="form-group">
+    <label for="message">What's up?</label>
+    <textarea class="form-control" rows="3" id="message" placeholder="Enter your message"></textarea>
+</div>
+<span id="authorId" style="display:none">@Model["Author"]</span>
+    <div class="panel panel-info chat-widget-main">
+        <div class="panel-heading">
+            <h5>@Html.ActionLink("PREVIOUS MESSAGES", "Index", "Home", routeValues: new { id = Model["FromMessageId"] }, htmlAttributes: null)</h5>
+        </div>
+        <div class="panel-body" id="discussion">
+            @foreach (var item in Model["ChatMessages"])
+            {
+                <div class="chat-row" data-id="@item.Id">
+                    <div class="chat-col-@(item.AuthorId.ToString() == Model["Author"] ? "right" : "left")">
+                        @item.Text
+                        <strong class="chat-widget-time">
+                            &nbsp
+                            @item.Created.ToString().Substring(11, 5)
+                        </strong>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    @section scripts {
+        <script src="~/SignalR/hubs"></script>
+        <script>
+            $(function () {
+                var lastMessageUniqueId,
+                    discussionElem = document.getElementById('discussion'),
+                    messageElem = document.getElementById('message'),
+                    currentAuthorElem = document.getElementById('authorId');
+
+                var panelElem = discussionElem.parentNode;
+                var chat = $.connection.chatHub;
+
+                chat.client.addNewMessageToPage = function (id, message, authorId) {
+                    var item = document.createElement('div'),
+                        currentTime = new Date().toTimeString().substring(0, 5);
+
+                    item.setAttribute('class', 'chat-row');
+                    item.setAttribute('data-id', id);
+                    item.innerHTML
+                        = '<div class="chat-col-'
+                        + (authorId === currentAuthorElem.textContent ? 'right' : 'left') + '">'
+                        + message + '<strong class="chat-widget-time">&nbsp' + currentTime + '</strong>'
+                        + '</div>'
+
+                    discussionElem.appendChild(item);
+                    var panelElem = discussionElem.parentNode;
+                    panelElem.scrollTop = panelElem.scrollHeight;
+                    messageElem.focus();
+                };
+
+                panelElem.scrollTop = 0;
+                messageElem.focus();
+
+                $.connection.hub.start().done(function () {
+                    $(messageElem).bind('keyup', function (e) {
+                        if (e.key !== 'Enter') return;
+                        chat.server.send(messageElem.value, currentAuthorElem.textContent);
+                        messageElem.value = new String;
+                    });
+                });
+            });
+        </script>
+    }
