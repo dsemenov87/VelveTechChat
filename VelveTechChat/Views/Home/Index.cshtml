@@ -16,11 +16,7 @@
             {
                 <div class="chat-row" data-id="@item.Id">
                     <div class="chat-col-@(item.AuthorId.ToString() == Model["Author"] ? "right" : "left")">
-                        @item.Text
-                        <strong class="chat-widget-time">
-                            &nbsp
-                            @item.Created.ToString().Substring(11, 5)
-                        </strong>
+                        @item.Text <strong>&nbsp @item.Created.ToString().Substring(11, 5)</strong>
                     </div>
                 </div>
             }
@@ -53,11 +49,10 @@
                     item.innerHTML
                         = '<div class="chat-col-'
                         + (authorId === currentAuthorElem.textContent ? 'right' : 'left') + '">'
-                        + message + '<strong class="chat-widget-time">&nbsp' + currentTime + '</strong>'
+                        + message + '<strong>&nbsp' + currentTime + '</strong>'
                         + '</div>'
 
                     discussionElem.appendChild(item);
-                    var panelElem = discussionElem.parentNode;
                     panelElem.scrollTop = panelElem.scrollHeight;
                     messageElem.focus();
                 };

@@ -7,7 +7,6 @@ body {
     padding-bottom: 20px;
 }
 
-/* Set padding to keep content from hitting the edges */
 .body-content {
     height: 100%;
     margin: 0 auto;
@@ -32,11 +31,6 @@ body {
     margin-left:0;
     margin-right:0;
     padding:0;
-}
-
-.chat-widget-time {
-    text-align:right;
-    vertical-align:bottom;
 }
 
 .chat-col-left {
